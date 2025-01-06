@@ -1,8 +1,11 @@
-export default function Contact() {
+import ContactForm from "@/components/ContactForm";
+
+const ContactPage: React.FC = () => {
   return (
-    <div>
-      <h1>Contact Page</h1>
-      <p>This is the Contact page.</p>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <ContactForm />
     </div>
   );
-}
+};
+
+export default ContactPage;
