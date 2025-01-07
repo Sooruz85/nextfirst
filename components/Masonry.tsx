@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Masonry from "@/components/Masonry";
+import BlurText from "@/components/BlurText";
 
 const data = Array.from({ length: 43 }, (_, i) => ({
   id: i + 1,
@@ -10,9 +13,14 @@ const data = Array.from({ length: 43 }, (_, i) => ({
 const MasonryPage = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-    <h1 style={{ fontSize: "3rem", fontWeight: "bold", textAlign: "center" }}>
-  Discover our artists!
-</h1>
+      {/* Utilisation de BlurText pour le titre */}
+      <BlurText
+        text="Discover our artists!"
+        delay={150} // Animation delay between words
+        animateBy="words" // Animation style: word by word
+        direction="top" // Animation comes from top
+        className="text-6xl font-bold text-center mb-8 text-blue-800"
+      />
       <Masonry data={data} />
     </div>
   );

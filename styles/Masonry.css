@@ -1,0 +1,23 @@
+.masonry {
+  position: relative;
+  width: 100%;
+}
+
+.masonry > div {
+  position: absolute;
+  will-change: transform, width, height, opacity;
+  padding: 10px; /* Add spacing on all sides */
+}
+
+.masonry > div > div {
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.masonry > div > div:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
