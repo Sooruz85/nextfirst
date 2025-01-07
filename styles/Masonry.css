@@ -1,12 +1,14 @@
 .masonry {
   position: relative;
   width: 100%;
+  min-height: 500px; /* Hauteur minimale pour éviter les chevauchements */
+  margin-top: 50px; /* Ajoute un espacement par rapport au texte */
 }
 
 .masonry > div {
   position: absolute;
   will-change: transform, width, height, opacity;
-  padding: 10px; /* Add spacing on all sides */
+  padding: 10px; /* Ajoute un espacement autour des éléments */
 }
 
 .masonry > div > div {
@@ -14,10 +16,10 @@
   background-position: center;
   border-radius: 4px;
   box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease-in-out; /* Transition fluide */
 }
 
 .masonry > div > div:hover {
   transform: scale(1.05);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease-in-out; /* Transition fluide au survol */
 }

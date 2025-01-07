@@ -5,7 +5,14 @@ import { motion, useMotionValue, useAnimation, useTransform } from "framer-motio
 import "../styles/RollingGallery.css";
 
 const RollingGallery = ({ autoplay = false, pauseOnHover = false, images = [] }) => {
-  const [isScreenSizeSm, setIsScreenSizeSm] = useState(window.innerWidth <= 640);
+  // Initialise l'état de la taille d'écran avec une valeur par défaut pour le SSR
+  const [isScreenSizeSm, setIsScreenSizeSm] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth <= 640;
+    }
+    return false; // Valeur par défaut pour le SSR
+  });
+
   const cylinderWidth = isScreenSizeSm ? 1100 : 1800;
   const faceCount = images.length;
   const faceWidth = (cylinderWidth / faceCount) * 1.5;
@@ -14,7 +21,7 @@ const RollingGallery = ({ autoplay = false, pauseOnHover = false, images = [] })
 
   const rotation = useMotionValue(0);
   const controls = useAnimation();
-  const autoplayRef = useRef();
+  const autoplayRef = useRef(null);
 
   const handleDrag = (_, info) => {
     rotation.set(rotation.get() + info.offset.x * dragFactor);
@@ -43,13 +50,23 @@ const RollingGallery = ({ autoplay = false, pauseOnHover = false, images = [] })
     }
   }, [autoplay, rotation, controls, faceCount]);
 
+  // Gère les changements de taille d'écran
   useEffect(() => {
     const handleResize = () => {
       setIsScreenSizeSm(window.innerWidth <= 640);
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    // Ajoute un écouteur d'événement sur resize
+    if (typeof window !== "undefined") {
+      handleResize(); // Met à jour immédiatement lors du montage
+      window.addEventListener("resize", handleResize);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
   }, []);
 
   const handleMouseEnter = () => {

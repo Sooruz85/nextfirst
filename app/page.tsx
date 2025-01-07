@@ -10,6 +10,7 @@ export default function Home() {
     "/images/image4.jpg",
     "/images/image5.jpg",
   ]; // Remplacez par vos propres chemins d'image
+  
 
   return (
     <div className="container mx-auto p-8">
