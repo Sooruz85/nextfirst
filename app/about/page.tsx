@@ -32,9 +32,9 @@ export default function About() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Section texte centré */}
-      <div className="flex justify-center py-8">
+    <div className="relative min-h-screen bg-gray-100">
+      {/* Section texte centré horizontalement */}
+      <div className="flex justify-center items-center py-16">
         <BlurText
           text="About Page"
           className="text-6xl font-bold text-center text-gray-800"
@@ -43,8 +43,8 @@ export default function About() {
         />
       </div>
 
-      {/* Section Masonry */}
-      <div className="px-4">
+      {/* Section galerie Masonry */}
+      <div className="mt-8 px-4">
         <Masonry data={data} />
       </div>
     </div>

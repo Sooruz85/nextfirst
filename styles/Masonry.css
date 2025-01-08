@@ -19,6 +19,14 @@
   transition: transform 0.3s ease-in-out; /* Transition fluide */
 }
 
+/* Texte spécifique dans les éléments Masonry */
+.masonry > div > div > p {
+  font-size: 5.5rem; /* Augmente la taille de la police */
+  color: #333; /* Assure une bonne lisibilité */
+  text-align: center; /* Centre le texte dans chaque élément */
+  font-weight: bold; /* Ajoute un style gras */
+}
+
 .masonry > div > div:hover {
   transform: scale(1.05);
   transition: transform 0.3s ease-in-out; /* Transition fluide au survol */
