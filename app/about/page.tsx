@@ -36,8 +36,8 @@ export default function About() {
       {/* Section texte centré horizontalement */}
       <div className="flex justify-center items-center py-16">
         <BlurText
-          text="About Page"
-          className="text-6xl font-bold text-center text-gray-800"
+          text="Artists"
+          className="text-6xl font-extrabold text-black-800 mb-4 font-poppins tracking-normal whitespace-nowrap"
           direction="top"
           delay={100}
         />

@@ -1,28 +1,29 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
+    "target": "ES2017", // Cible moderne pour ES2017
+    "lib": ["dom", "dom.iterable", "esnext"], // Bibliothèques nécessaires
+    "allowJs": true, // Autoriser les fichiers JS
+    "skipLibCheck": true, // Ignorer la vérification des types dans les fichiers de bibliothèque
+    "strict": true, // Activer le mode strict
+    "noImplicitAny": true, // Interdire les types "any" implicites
+    "noEmit": true, // Empêcher la génération de fichiers JS
+    "esModuleInterop": true, // Support de l'importation CommonJS/ESModule
+    "module": "esnext", // Utiliser le module ESNext
+    "moduleResolution": "node", // Résolution Node.js (mise à jour pour Next.js)
+    "resolveJsonModule": true, // Support pour les fichiers JSON
+    "isolatedModules": true, // Obliger à ne pas utiliser de modules globaux
+    "jsx": "preserve", // Préserver JSX pour que Next.js puisse le gérer
+    "incremental": true, // Activer la compilation incrémentale
     "plugins": [
       {
-        "name": "next"
+        "name": "next" // Plugin pour Next.js
       }
     ],
     "paths": {
-      "@/*": ["./*"]
-    }
+      "@/*": ["./*"] // Alias pour les imports
+    },
+    "types": ["@types/node", "@types/react", "@types/react-dom"] // Types essentiels
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"], // Inclure les fichiers nécessaires
+  "exclude": ["node_modules"] // Exclure les fichiers inutiles
 }

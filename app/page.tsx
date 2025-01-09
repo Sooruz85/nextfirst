@@ -15,17 +15,15 @@ export default function Home() {
   return (
     <div className="container mx-auto p-8">
       <header className="text-center mb-10">
-        {/* Titre avec animation BlurText, doublé en taille et centré */}
+        {/* Titre avec la police Poppins ExtraBold */}
         <div className="flex justify-center">
-          
-        <BlurText
-          text="Galerie des peintres du voyage!"
-          delay={100}
-          animateBy="words"
-          direction="top"
-          className="text-10xl font-bold text-blue-600 mb-4 tracking-wide" // Ajoute un espacement large
-        />
-
+          <BlurText
+            text="Gallery of Travel Painters"
+            delay={100}
+            animateBy="words"
+            direction="top"
+            className="text-6xl font-extrabold text-black-800 mb-4 font-poppins tracking-normal whitespace-nowrap"
+          />
         </div>
       </header>
 

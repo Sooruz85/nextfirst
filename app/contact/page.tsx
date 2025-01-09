@@ -1,3 +1,5 @@
+"use client";
+
 import ContactForm from "@/components/ContactForm";
 
 const ContactPage: React.FC = () => {
@@ -6,6 +8,8 @@ const ContactPage: React.FC = () => {
       <ContactForm />
     </div>
   );
+
+  
 };
 
 export default ContactPage;

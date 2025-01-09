@@ -1,7 +1,10 @@
-import type { NextConfig } from "next";
+import { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  experimental: {
+    appDir: true, // Active le système de fichiers `app/` pour les routes dynamiques.
+  },
 };
 
 export default nextConfig;

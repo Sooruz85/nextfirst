@@ -11,7 +11,7 @@ const NavBar: React.FC = () => {
             Home
           </Link>
           <Link href="/about" className="hover:text-gray-400">
-            Artistes
+            Artists
           </Link>
           <Link href="/contact" className="hover:text-gray-400">
             Contact

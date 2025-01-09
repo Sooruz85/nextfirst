@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useTransition, a } from "@react-spring/web";
+import Link from "next/link";
 
 import "../styles/Masonry.css";
-// Assurez-vous que ce fichier existe et contient les styles nécessaires.
 
 function Masonry({ data }: { data: { id: number; image: string; height: number }[] }) {
   const [columns, setColumns] = useState(2);
 
+  // Responsive column count
   useEffect(() => {
     const updateColumns = () => {
       if (window.matchMedia("(min-width: 1500px)").matches) {
@@ -30,6 +31,7 @@ function Masonry({ data }: { data: { id: number; image: string; height: number }
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
 
+  // Track container width
   useEffect(() => {
     const handleResize = () => {
       if (ref.current) {
@@ -43,8 +45,8 @@ function Masonry({ data }: { data: { id: number; image: string; height: number }
   }, [ref]);
 
   const [heights, gridItems] = useMemo(() => {
-    let heights = new Array(columns).fill(0);
-    let gridItems = data.map((child) => {
+    const heights = new Array(columns).fill(0);
+    const gridItems = data.map((child) => {
       const column = heights.indexOf(Math.min(...heights));
       const x = (width / columns) * column;
       const y = (heights[column] += child.height / 2) - child.height / 2;
@@ -67,16 +69,19 @@ function Masonry({ data }: { data: { id: number; image: string; height: number }
     <div ref={ref} className="masonry" style={{ height: Math.max(...heights) }}>
       {transitions((style, item) => (
         <a.div key={item.id} style={style}>
-          <div
-            style={{
-              backgroundColor: "#ffffff",
-              width: "100%",
-              height: "100%",
-              backgroundImage: `url(${item.image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
+          <Link href={`/image/${item.id}`}>
+            <div
+              style={{
+                backgroundColor: "#ffffff",
+                width: "100%",
+                height: "100%",
+                backgroundImage: `url(${item.image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+              className="rounded-lg shadow-lg cursor-pointer hover:opacity-90"
+            />
+          </Link>
         </a.div>
       ))}
     </div>

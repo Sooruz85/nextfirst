@@ -6,9 +6,8 @@ module.exports = {
   ],
   theme: {
     extend: {
-      fontSize: {
-        "10xl": "4rem", // Taille personnalisée pour doubler la taille (~128px)
-        "12xl": "3rem", // Encore plus grand (~160px)
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"], // Ajoutez la police ici
       },
     },
   },
