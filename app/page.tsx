@@ -10,6 +10,9 @@ export default function Home() {
     "/images/image3.jpg",
     "/images/image4.jpg",
     "/images/image5.jpg",
+    "/images/image6.jpg",
+    "/images/image7.jpg",
+    "/images/image8.jpg",
   ]; // Remplacez par vos propres chemins d'image
 
   return (
