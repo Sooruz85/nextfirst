@@ -1,29 +1,36 @@
 {
   "compilerOptions": {
     "target": "ES2017", // Cible moderne pour ES2017
-    "lib": ["dom", "dom.iterable", "esnext"], // Bibliothèques nécessaires
-    "allowJs": true, // Autoriser les fichiers JS
-    "skipLibCheck": true, // Ignorer la vérification des types dans les fichiers de bibliothèque
-    "strict": true, // Activer le mode strict
+    "lib": ["dom", "dom.iterable", "esnext"], // Bibliothèques nécessaires pour les fonctionnalités modernes et le DOM
+    "allowJs": true, // Autoriser les fichiers JavaScript dans le projet
+    "skipLibCheck": true, // Ignorer la vérification des types dans les bibliothèques
+    "strict": true, // Activer le mode strict pour un typage plus sûr
     "noImplicitAny": true, // Interdire les types "any" implicites
-    "noEmit": true, // Empêcher la génération de fichiers JS
-    "esModuleInterop": true, // Support de l'importation CommonJS/ESModule
-    "module": "esnext", // Utiliser le module ESNext
-    "moduleResolution": "node", // Résolution Node.js (mise à jour pour Next.js)
-    "resolveJsonModule": true, // Support pour les fichiers JSON
-    "isolatedModules": true, // Obliger à ne pas utiliser de modules globaux
-    "jsx": "preserve", // Préserver JSX pour que Next.js puisse le gérer
-    "incremental": true, // Activer la compilation incrémentale
+    "noEmit": true, // Empêcher la génération de fichiers JavaScript (Next.js gère le build)
+    "esModuleInterop": true, // Supporter les importations CommonJS/ESModule
+    "module": "esnext", // Utiliser le système de modules ESNext
+    "moduleResolution": "node", // Résolution des modules basée sur Node.js
+    "resolveJsonModule": true, // Permet d'importer des fichiers JSON
+    "isolatedModules": true, // Assure que chaque fichier est traité comme un module indépendant
+    "jsx": "preserve", // Préserver le JSX pour que Next.js puisse le transformer
+    "incremental": true, // Activer la compilation incrémentale pour des builds plus rapides
+    "paths": {
+      "@/*": ["./*"] // Configurer un alias pour les imports simplifiés
+    },
     "plugins": [
       {
-        "name": "next" // Plugin pour Next.js
+        "name": "next" // Plugin pour optimiser Next.js avec TypeScript
       }
     ],
-    "paths": {
-      "@/*": ["./*"] // Alias pour les imports
-    },
-    "types": ["@types/node", "@types/react", "@types/react-dom"] // Types essentiels
+    "types": ["@types/node", "@types/react", "@types/react-dom"] // Types essentiels pour le projet
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"], // Inclure les fichiers nécessaires
-  "exclude": ["node_modules"] // Exclure les fichiers inutiles
+  "include": [
+    "next-env.d.ts", // Fichier généré par Next.js pour les types globaux
+    "**/*.ts", // Inclure tous les fichiers TypeScript
+    "**/*.tsx", // Inclure tous les fichiers TypeScript React
+    ".next/types/**/*.ts" // Types spécifiques générés par Next.js
+  ],
+  "exclude": [
+    "node_modules" // Exclure les dépendances pour éviter les conflits inutiles
+  ]
 }

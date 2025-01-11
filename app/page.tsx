@@ -2,7 +2,6 @@
 
 import RollingGallery from "@/components/RollingGallery";
 import BlurText from "@/components/BlurText";
-import Link from "next/link";
 
 export default function Home() {
   const images = [
@@ -18,8 +17,8 @@ export default function Home() {
 
   return (
     <div className="container mx-auto p-8">
+      {/* Titre avec BlurText */}
       <header className="text-center mb-10">
-        {/* Titre avec la police Poppins ExtraBold */}
         <div className="flex justify-center">
           <BlurText
             text="Gallery of Travel Painters"
@@ -29,13 +28,10 @@ export default function Home() {
             className="text-6xl font-extrabold text-black-800 mb-4 font-poppins tracking-normal whitespace-nowrap"
           />
         </div>
-        <Link href="/login" className="text-blue-500 hover:underline mt-4 inline-block">
-          Login to access your account
-        </Link>
       </header>
 
+      {/* Carousel */}
       <section className="relative">
-        {/* Carousel */}
         <div className="relative z-10">
           <RollingGallery images={images} autoplay={true} pauseOnHover={true} />
         </div>
