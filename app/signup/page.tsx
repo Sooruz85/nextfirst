@@ -3,33 +3,36 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Simuler une validation de connexion
-    if (email === "user@example.com" && password === "password123") {
-      router.push("/"); // Redirige vers l'accueil après connexion réussie
-    } else {
-      setError("Invalid email or password. Please try again.");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
     }
+
+    // Simuler une création de compte
+    console.log("Account created for:", email);
+    router.push("/login"); // Redirige vers la page Login après l'inscription
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Sign Up</h1>
 
         {error && (
           <div className="text-red-500 text-sm mb-4 text-center">{error}</div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSignUp} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
@@ -58,22 +61,39 @@ export default function LoginPage() {
               required
             />
           </div>
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Confirm Password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              placeholder="Confirm your password"
+              required
+            />
+          </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-600 transition duration-200"
+            className="w-full bg-green-500 text-white py-2 px-4 rounded-lg shadow hover:bg-green-600 transition duration-200"
           >
-            Login
+            Sign Up
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <span
-              onClick={() => router.push("/signup")}
+              onClick={() => router.push("/login")}
               className="text-blue-500 hover:underline cursor-pointer"
             >
-              Create one
+              Login here
             </span>
           </p>
         </div>
