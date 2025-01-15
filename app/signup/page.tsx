@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase"; // Assurez-vous que la configuration de Supabase est dans lib/supabase.ts
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -18,9 +20,23 @@ export default function SignUpPage() {
       return;
     }
 
-    // Simuler une création de compte
-    console.log("Account created for:", email);
-    router.push("/login"); // Redirige vers la page Login après l'inscription
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        setSuccess("Account created successfully! Redirecting to login...");
+        setTimeout(() => {
+          router.push("/login"); // Redirige vers la page Login après 2 secondes
+        }, 2000);
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+    }
   };
 
   return (
@@ -30,6 +46,12 @@ export default function SignUpPage() {
 
         {error && (
           <div className="text-red-500 text-sm mb-4 text-center">{error}</div>
+        )}
+
+        {success && (
+          <div className="text-green-500 text-sm mb-4 text-center">
+            {success}
+          </div>
         )}
 
         <form onSubmit={handleSignUp} className="space-y-4">
