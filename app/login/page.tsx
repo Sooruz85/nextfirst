@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase"; // Assurez-vous que cette configuration est correcte
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,11 +13,24 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Simuler une validation de connexion
-    if (email === "user@example.com" && password === "password123") {
-      router.push("/"); // Redirige vers l'accueil après connexion réussie
-    } else {
-      setError("Invalid email or password. Please try again.");
+    try {
+      // Authentification via Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError("Invalid email or password. Please try again.");
+      } else {
+        // Sauvegarder l'utilisateur dans le localStorage
+        localStorage.setItem("user", JSON.stringify(data.user));
+        // Redirige vers la page d'accueil
+        router.push("/");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An unexpected error occurred. Please try again.");
     }
   };
 

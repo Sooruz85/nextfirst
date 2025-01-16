@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase"; // Assurez-vous que la configuration de Supabase est dans lib/supabase.ts
+import { supabase } from "@/lib/supabase";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState(""); // Nouveau champ pour le nom ou pseudo
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const router = useRouter();
@@ -21,20 +22,35 @@ export default function SignUpPage() {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      // Création de l'utilisateur via Supabase
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
 
       if (error) {
         setError(error.message);
-      } else {
+        return;
+      }
+      console.log("Signup data:", data); // <-- Ajoutez ce log
+      if (error) {
+        setError(error.message);
+        return;
+      }
+      // Enregistrement des informations supplémentaires (nom) dans la table des utilisateurs
+      if (data.user) {
+        await supabase.from("users").insert([
+          {
+            id: data.user.id, // Lier le nom à l'utilisateur créé
+            name,
+            email,
+          },
+        ]);
         setSuccess("Account created successfully! Redirecting to login...");
-        setTimeout(() => {
-          router.push("/login"); // Redirige vers la page Login après 2 secondes
-        }, 2000);
+        setTimeout(() => router.push("/login"), 2000); // Redirige vers /login après 2 secondes
       }
     } catch (err) {
+      console.error("Signup error:", err);
       setError("An unexpected error occurred. Please try again.");
     }
   };
@@ -47,14 +63,25 @@ export default function SignUpPage() {
         {error && (
           <div className="text-red-500 text-sm mb-4 text-center">{error}</div>
         )}
-
         {success && (
-          <div className="text-green-500 text-sm mb-4 text-center">
-            {success}
-          </div>
+          <div className="text-green-500 text-sm mb-4 text-center">{success}</div>
         )}
 
         <form onSubmit={handleSignUp} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              Name or Pseudo
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              placeholder="Enter your name or pseudo"
+              required
+            />
+          </div>
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email

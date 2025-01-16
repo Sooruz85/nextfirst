@@ -1,8 +1,28 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaPinterest, FaInstagram, FaFacebook, FaUserCircle } from "react-icons/fa"; // Import de l'icône d'utilisateur
+import { FaPinterest, FaInstagram, FaFacebook, FaUserCircle } from "react-icons/fa";
+import { supabase } from "@/lib/supabase";
 
 const NavBar: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Vérifiez si un utilisateur est connecté
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.reload(); // Rafraîchit la page après déconnexion
+  };
+
   return (
     <nav className="bg-gray-800 p-4 text-white">
       <div className="container mx-auto flex justify-between items-center">
@@ -53,9 +73,21 @@ const NavBar: React.FC = () => {
           </a>
 
           {/* Icône de compte */}
-          <Link href="/login" className="hover:text-gray-400 cursor-pointer">
-            <FaUserCircle size={24} />
-          </Link>
+          {user ? (
+            <div className="flex items-center space-x-2">
+              <span className="text-sm">{user.email}</span>
+              <button
+                onClick={handleLogout}
+                className="hover:text-gray-400 cursor-pointer"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link href="/login" className="hover:text-gray-400 cursor-pointer">
+              <FaUserCircle size={24} />
+            </Link>
+          )}
         </div>
       </div>
     </nav>
