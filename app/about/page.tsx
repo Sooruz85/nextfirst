@@ -1,8 +1,15 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // Utilisation correcte de next/navigation
+import { supabase } from "@/lib/supabase";
 import Masonry from "../../components/Masonry";
 import BlurText from "../../components/BlurText";
 
 export default function About() {
+  const [loading, setLoading] = useState(true); // État pour vérifier si la vérification est en cours
+  const router = useRouter();
+
   const data = [
     { id: 1, image: "https://picsum.photos/id/10/200/300", height: 400 },
     { id: 2, image: "https://picsum.photos/id/14/200/300", height: 300 },
@@ -30,6 +37,30 @@ export default function About() {
     { id: 24, image: "https://picsum.photos/id/124/200/300", height: 300 },
     { id: 25, image: "https://picsum.photos/id/125/200/300", height: 350 },
   ];
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
+
+      if (!data.user) {
+        // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
+        router.push("/login");
+      } else {
+        setLoading(false); // Arrête le chargement si l'utilisateur est connecté
+      }
+    };
+
+    checkUser();
+  }, [router]);
+
+  if (loading) {
+    // Affiche un écran de chargement pendant la vérification
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-gray-500 text-lg">Checking authentication...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-gray-100">

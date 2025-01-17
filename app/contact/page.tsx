@@ -1,8 +1,9 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
+import { supabase } from "@/lib/supabase";
 import StarBorder from "@/components/StarBorder";
 
 mapboxgl.accessToken = "pk.eyJ1Ijoic29vcnV6ODUiLCJhIjoiY2xzaXN2cWtzMmhsaTJpcWxqcXRocHFsbiJ9.jgkP6c1YAVh9zhhABmnrGA"; // Remplacez par votre clé Mapbox
@@ -10,14 +11,29 @@ mapboxgl.accessToken = "pk.eyJ1Ijoic29vcnV6ODUiLCJhIjoiY2xzaXN2cWtzMmhsaTJpcWxqc
 export default function ContactPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const mapContainer = useRef<HTMLDivElement>(null);
 
+  const [loading, setLoading] = useState(true); // Vérification d'authentification
   const title = searchParams.get("title") || "Formulaire de Contact";
   const image = searchParams.get("image");
 
-  const mapContainer = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
+
+      if (!data.user) {
+        // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
+        router.push("/login");
+      } else {
+        setLoading(false); // Arrête le chargement si l'utilisateur est connecté
+      }
+    };
+
+    checkUser();
+  }, [router]);
 
   useEffect(() => {
-    if (mapContainer.current) {
+    if (!loading && mapContainer.current) {
       const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: "mapbox://styles/mapbox/streets-v11",
@@ -27,9 +43,27 @@ export default function ContactPage() {
 
       new mapboxgl.Marker().setLngLat([2.3522, 48.8566]).addTo(map);
 
-      return () => map.remove();
+      // Redimensionne la carte si la fenêtre change de taille
+      const handleResize = () => {
+        map.resize();
+      };
+      window.addEventListener("resize", handleResize);
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+        map.remove();
+      };
     }
-  }, []);
+  }, [loading]);
+
+  if (loading) {
+    // Affiche un écran de chargement pendant la vérification
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-gray-500 text-lg">Checking authentication...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center">
@@ -89,7 +123,7 @@ export default function ContactPage() {
             <p>Téléphone : +33 1 23 45 67 89</p>
           </div>
           <div className="mt-6">
-            <div ref={mapContainer} className="w-full h-64 rounded-lg shadow-md" />
+            <div ref={mapContainer} className="map-container" />
           </div>
           <div className="flex flex-col space-y-4 mt-16">
             <StarBorder as="button" type="submit" color="blue" speed="4s" className="w-full">

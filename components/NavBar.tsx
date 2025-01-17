@@ -7,20 +7,31 @@ import { supabase } from "@/lib/supabase";
 
 const NavBar: React.FC = () => {
   const [user, setUser] = useState<any>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
+  // Vérifiez si un utilisateur est connecté
   useEffect(() => {
-    // Vérifiez si un utilisateur est connecté
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+
+    // S'abonner aux changements d'état de session
+    const { data: subscription } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user || null);
+    });
+
+    fetchUser();
+
+    // Nettoyer l'abonnement
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    localStorage.removeItem("user");
     setUser(null);
-    window.location.reload(); // Rafraîchit la page après déconnexion
   };
 
   return (
@@ -74,23 +85,105 @@ const NavBar: React.FC = () => {
 
           {/* Icône de compte */}
           {user ? (
-            <div className="flex items-center space-x-2">
-              <span className="text-sm">{user.email}</span>
+            <button
+              onClick={handleLogout}
+              className="hover:text-gray-400 cursor-pointer"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
               <button
-                onClick={handleLogout}
+                onClick={() => setShowLoginModal(true)}
                 className="hover:text-gray-400 cursor-pointer"
               >
-                Logout
+                <FaUserCircle size={24} />
               </button>
-            </div>
-          ) : (
-            <Link href="/login" className="hover:text-gray-400 cursor-pointer">
-              <FaUserCircle size={24} />
-            </Link>
+              {showLoginModal && (
+                <LoginModal onClose={() => setShowLoginModal(false)} />
+              )}
+            </>
           )}
         </div>
       </div>
     </nav>
+  );
+};
+
+const LoginModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError("Invalid email or password. Please try again.");
+    } else {
+      onClose(); // Ferme la modale après connexion réussie
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <h2 className="text-xl font-bold mb-4">Login</h2>
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="mt-1 w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="mt-1 w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+          >
+            Login
+          </button>
+        </form>
+        <button
+          onClick={onClose}
+          className="mt-4 w-full text-gray-500 hover:underline"
+        >
+          Close
+        </button>
+      </div>
+    </div>
   );
 };
 
