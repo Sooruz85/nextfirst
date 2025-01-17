@@ -11,7 +11,7 @@ mapboxgl.accessToken = "pk.eyJ1Ijoic29vcnV6ODUiLCJhIjoiY2xzaXN2cWtzMmhsaTJpcWxqc
 export default function ContactPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const mapContainer = useRef<HTMLDivElement>(null);
+  const mapContainer = useRef(null); // Assurez-vous que cette référence est correctement définie
 
   const [loading, setLoading] = useState(true); // Vérification d'authentification
   const title = searchParams.get("title") || "Formulaire de Contact";
@@ -34,16 +34,35 @@ export default function ContactPage() {
 
   useEffect(() => {
     if (!loading && mapContainer.current) {
+      // Coordonnées du centre de la carte (ici : Paris)
+      const centerCoordinates = [2.3522, 48.8566];
+
+      // Définir les limites visibles de la carte
+      const bounds = [
+        [2.25, 48.81], // Sud-Ouest (latitude, longitude)
+        [2.45, 48.9],  // Nord-Est (latitude, longitude)
+      ];
+
+      // Initialiser la carte
       const map = new mapboxgl.Map({
-        container: mapContainer.current,
+        container: mapContainer.current, // Utilise la référence définie ici
         style: "mapbox://styles/mapbox/streets-v11",
-        center: [2.3522, 48.8566], // Paris
+        center: centerCoordinates,
         zoom: 12,
+        scrollZoom: true, // Permettre le zoom avec la molette
+        dragRotate: false, // Désactiver la rotation
+        touchPitch: false, // Désactiver le zoom en pinçant sur mobile
       });
 
-      new mapboxgl.Marker().setLngLat([2.3522, 48.8566]).addTo(map);
+      // Restreindre la carte à ces limites
+      map.setMaxBounds(bounds);
 
-      // Redimensionne la carte si la fenêtre change de taille
+      // Ajouter un marqueur au centre
+      new mapboxgl.Marker()
+        .setLngLat(centerCoordinates)
+        .addTo(map);
+
+      // Ajuster la taille de la carte lorsque la fenêtre est redimensionnée
       const handleResize = () => {
         map.resize();
       };
@@ -123,6 +142,7 @@ export default function ContactPage() {
             <p>Téléphone : +33 1 23 45 67 89</p>
           </div>
           <div className="mt-6">
+            {/* Appliquez la classe CSS à la carte */}
             <div ref={mapContainer} className="map-container" />
           </div>
           <div className="flex flex-col space-y-4 mt-16">
