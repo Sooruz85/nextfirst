@@ -2,6 +2,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import StarBorder from "@/components/StarBorder";
+import { useState } from "react";
+import Swal from "sweetalert2";
 
 export default function ReservationPage() {
   const searchParams = useSearchParams();
@@ -12,6 +14,64 @@ export default function ReservationPage() {
   const image = searchParams.get("image");
   const description = searchParams.get("description") || "Aucune description disponible.";
   const price = searchParams.get("price") || "100€";
+
+  // État pour le formulaire
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    quantity: 1,
+  });
+
+  // Gestion des changements dans le formulaire
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Fonction pour ajouter l'article au panier
+  const handleReservation = () => {
+    const cartItems = JSON.parse(localStorage.getItem("cart") || "[]"); // Récupérer le panier actuel
+    const newItem = {
+      title,
+      image,
+      description,
+      price,
+      quantity: formData.quantity,
+    };
+
+    cartItems.push(newItem); // Ajouter le nouvel article
+    localStorage.setItem("cart", JSON.stringify(cartItems)); // Sauvegarder le panier mis à jour
+
+    Swal.fire({
+      title: "Réservé avec succès !",
+      text: `${title} a été ajouté à votre panier.`,
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  };
+
+  // Fonction pour réinitialiser le formulaire avec SweetAlert2
+  const handleReset = () => {
+    Swal.fire({
+      title: "Formulaire réinitialisé !",
+      text: "Vous avez supprimé les données de réservation.",
+      imageUrl: image, // Affiche l'image associée à la réservation
+      imageWidth: 400,
+      imageHeight: 200,
+      imageAlt: title,
+      width: 600,
+      padding: "3em",
+      color: "#716add",
+      background: "#fff url(/images/trees.png)",
+      backdrop: `
+        rgba(0,0,123,0.4)
+        url("/images/nyan-cat.gif")
+        left top
+        no-repeat
+      `,
+    });
+    setFormData({ name: "", email: "", quantity: 1 }); // Réinitialise les champs
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
@@ -45,6 +105,8 @@ export default function ReservationPage() {
               type="text"
               id="name"
               name="name"
+              value={formData.name}
+              onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
             />
@@ -57,6 +119,8 @@ export default function ReservationPage() {
               type="email"
               id="email"
               name="email"
+              value={formData.email}
+              onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
             />
@@ -69,6 +133,8 @@ export default function ReservationPage() {
               type="number"
               id="quantity"
               name="quantity"
+              value={formData.quantity}
+              onChange={handleChange}
               min="1"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
@@ -81,7 +147,7 @@ export default function ReservationPage() {
           {/* Bouton Réserver */}
           <StarBorder
             as="button"
-            onClick={() => alert("Réservation effectuée !")}
+            onClick={handleReservation}
             color="cyan"
             speed="4s"
             className="w-full"
@@ -100,11 +166,22 @@ export default function ReservationPage() {
             Règlement
           </StarBorder>
 
+          {/* Bouton Supprimer */}
+          <StarBorder
+            as="button"
+            onClick={handleReset}
+            color="red"
+            speed="5s"
+            className="w-full"
+          >
+            Supprimer
+          </StarBorder>
+
           {/* Bouton Retour */}
           <StarBorder
             as="button"
             onClick={() => router.back()}
-            color="red"
+            color="gray"
             speed="4s"
             className="w-full"
           >

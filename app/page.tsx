@@ -12,30 +12,31 @@ export default function Home() {
     "/images/image5.jpg",
     "/images/image6.jpg",
     "/images/image7.jpg",
-    "/images/image8.jpg",
+    "/images/image8 2.jpg",
   ]; // Remplacez par vos propres chemins d'image
 
   return (
-    <div className="container mx-auto p-8">
-      {/* Titre avec BlurText */}
-      <header className="text-center mb-10">
-        <div className="flex justify-center">
-          <BlurText
-            text="Gallery of Travel Painters"
-            delay={100}
-            animateBy="words"
-            direction="top"
-            className="text-6xl font-extrabold text-black-800 mb-4 font-poppins tracking-normal whitespace-nowrap"
-          />
-        </div>
-      </header>
+    <div className="min-h-screen bg-white-100">
+      <div className="container mx-auto p-8">
+        <header className="text-center mb-10">
+          <div className="flex justify-center">
+            <BlurText
+              text="Gallery of Travel Painters"
+              delay={100}
+              animateBy="words"
+              direction="top"
+              className="text-6xl font-extrabold text-black-800 mb-4 font-poppins tracking-normal whitespace-nowrap"
+            />
+          </div>
+        </header>
 
-      {/* Carousel */}
-      <section className="relative">
-        <div className="relative z-10">
-          <RollingGallery images={images} autoplay={true} pauseOnHover={true} />
-        </div>
-      </section>
+        <section className="relative">
+          {/* Carousel */}
+          <div className="relative z-10">
+            <RollingGallery images={images} autoplay={true} pauseOnHover={true} />
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

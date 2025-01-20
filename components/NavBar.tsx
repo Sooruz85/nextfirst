@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaPinterest, FaInstagram, FaFacebook, FaUserCircle } from "react-icons/fa";
+import { FaPinterest, FaInstagram, FaFacebook, FaUserCircle, FaShoppingCart } from "react-icons/fa";
 import { supabase } from "@/lib/supabase";
 
 const NavBar: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [cartItemsCount, setCartItemsCount] = useState<number>(0); // État pour le nombre d'articles dans le panier
 
   // Vérifiez si un utilisateur est connecté
   useEffect(() => {
@@ -17,7 +18,7 @@ const NavBar: React.FC = () => {
     };
 
     // S'abonner aux changements d'état de session
-    const { data: subscription } = supabase.auth.onAuthStateChange((_, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user || null);
     });
 
@@ -25,7 +26,7 @@ const NavBar: React.FC = () => {
 
     // Nettoyer l'abonnement
     return () => {
-      subscription?.unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -33,6 +34,25 @@ const NavBar: React.FC = () => {
     await supabase.auth.signOut();
     setUser(null);
   };
+
+  // Mettre à jour le nombre d'articles dans le panier
+  useEffect(() => {
+    const updateCartItemsCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      setCartItemsCount(cart.length); // Mettre à jour le nombre d'articles
+    };
+
+    // Initialisation
+    updateCartItemsCount();
+
+    // Ajout d'un écouteur d'événements pour détecter les changements dans le localStorage
+    window.addEventListener("storage", updateCartItemsCount);
+
+    // Nettoyage
+    return () => {
+      window.removeEventListener("storage", updateCartItemsCount);
+    };
+  }, []);
 
   return (
     <nav className="bg-gray-800 p-4 text-white">
@@ -104,6 +124,18 @@ const NavBar: React.FC = () => {
               )}
             </>
           )}
+
+          {/* Icône du panier */}
+          <div className="relative cursor-pointer">
+            <Link href="/cart">
+              <FaShoppingCart size={24} className="hover:text-gray-400" />
+            </Link>
+            {cartItemsCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-1">
+                {cartItemsCount}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </nav>
